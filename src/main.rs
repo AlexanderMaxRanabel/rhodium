@@ -16,7 +16,7 @@ async fn discover(url: String, wordlist: String) -> Result<(), Box<dyn std::erro
     // Iterate over each line in the wordlist
     for line in reader.lines() {
         if let Ok(word) = line {
-            let target = url.clone().to_string() + &*word.to_string();
+            let target = url.clone().to_string() + &word.to_string();
             let response = reqwest::get(target.clone()).await?;
             let status = response.status().to_string();
             //let resp = response.json::<HashMap<String, String>>().await?;

@@ -8,6 +8,15 @@ async fn main() {
     let args: Vec<String> = env::args().collect();
     //monologue0 --url1 https://discord.com/2 --wordlist3 test.txt4  --filter5 --bycode6 4047
     if args.len() > 5 {
+        let log = r#"
+ _ __ ___   ___  _ __   ___
+| '_ ` _ \ / _ \| '_ \ / _ \
+| | | | | | (_) | | | | (_) |
+|_| |_| |_|\___/|_| |_|\___/
+
+────────────────────────────
+        "#;
+        println!("{}", log);
         let argument = &args[1].to_string();
         match argument.as_str() {
             "--url" => {

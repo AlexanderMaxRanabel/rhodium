@@ -23,7 +23,7 @@ pub async fn discover(url: String, wordlist: String) -> Result<(), Box<dyn std::
                 Some(code) => code.to_string(),
                 None => String::from("Unknown"),
             };
-            println!("{} {} {}", result.green(), word, target.clone().magenta());
+            println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
         }
     }
     Ok(())

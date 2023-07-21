@@ -3,9 +3,6 @@ mod discover_filter;
 
 use std::env;
 
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();

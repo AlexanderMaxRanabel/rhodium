@@ -58,12 +58,6 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                         println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
                         let mut indicator: i32 = -1;
                         //let resp = response.json::<HashMap<String, String>>().await?;
-                        let code:Option<&str> = status.split_whitespace().nth(0);
-                        let result = match code {
-                            Some(code) => code.to_string(),
-                            None => String::from("Unknown"),
-                        };
-                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
                         let mut successful: Vec<String> = vec![];
                         if response.status().is_success() {
                             successful.push(target.clone());

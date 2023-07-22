@@ -1,7 +1,8 @@
 //discover_filter.rs
-use std::env;
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+
 use reqwest;
 use colored::*;
 

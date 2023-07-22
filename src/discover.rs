@@ -78,7 +78,7 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                                     Some(newest_code) => newest_code.to_string(),
                                     None => String::from("Unknown"),
                                 };
-                                println!("{} {} {} {}",depth.to_string().purple().italic() ,newest_result.cyan(), word, newest_target.magenta());
+                                println!("{} {} {} {}", depth.to_string().purple().italic() ,newest_result.cyan(), word, newest_target.magenta());
                             }
                         } else {
                             continue;

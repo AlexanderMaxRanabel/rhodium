@@ -24,8 +24,6 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                     0 => {
                         if response.status().is_success() {
                             println!("{} {} {}", result.clone().cyan(), word, target.clone().magenta());
-                        } else {
-                            println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
                         }
                     },
                     1 => {
@@ -55,6 +53,43 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                             continue;
                         }
                     },
+
+                    2 => {
+                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                        let mut indicator: i32 = -1;
+                        //let resp = response.json::<HashMap<String, String>>().await?;
+                        let code:Option<&str> = status.split_whitespace().nth(0);
+                        let result = match code {
+                            Some(code) => code.to_string(),
+                            None => String::from("Unknown"),
+                        };
+                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+                        let mut successful: Vec<String> = vec![];
+                        if response.status().is_success() {
+                            successful.push(target.clone());
+                            indicator += 1;
+                            let new_target = successful[indicator as usize].clone() + "/" + &word;
+                            let new_response = reqwest::get(new_target.clone()).await?;
+
+                            let mut new_successful: Vec<String> = vec![];
+                            let mut new_indicator = -1;
+                            if new_response.status().is_success() {
+                                new_indicator += 1;
+                                new_successful.push(new_target.clone());
+                                let newest_target = new_successful[new_indicator as usize].clone() + "/" + &word;
+                                let newest_response = reqwest::get(newest_target.clone()).await?;
+                                let newest_status = newest_response.status().to_string();
+                                let newest_code:Option<&str> = newest_status.split_whitespace().nth(0);
+                                let newest_result = match newest_code {
+                                    Some(newest_code) => newest_code.to_string(),
+                                    None => String::from("Unknown"),
+                                };
+                                println!("{} {} {} {}",depth.to_string().purple().italic() ,newest_result.cyan(), word, newest_target.magenta());
+                            }
+                        } else {
+                            continue;
+                        }
+                    },
                     _ => {
                         println!("Unknown Depth");
                         std::process::exit(1)
@@ -63,4 +98,4 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
             }
         };
     Ok(())
-} //INCOMPLETE. how can store how much lines are in the file in a var in this context
+}//will be optimized. deal with it lmao

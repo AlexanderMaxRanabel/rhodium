@@ -5,6 +5,7 @@ use colored::*;
 
 pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let file = File::open(wordlist).expect("Failed to open the file.");
+    let mut successful: Vec<String> = vec![];
 
     // Create a BufReader to read the file efficiently
     let reader = BufReader::new(file);
@@ -27,17 +28,22 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                         println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
                     }
                 },
+
                 1 => {
-                    println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
-                    let mut indicator: i32 = -1;
-                    //let resp = response.json::<HashMap<String, String>>().await?;
                     let code:Option<&str> = status.split_whitespace().next();
                     let result = match code {
                         Some(code) => code.to_string(),
                         None => String::from("Unknown"),
                     };
-                    println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
-                    let mut successful: Vec<String> = vec![];
+
+                    if response.status().is_success() {
+                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+                    } else {
+                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                    }
+
+                    let mut indicator: i32 = -1;  
+                    
                     if response.status().is_success() {
                         successful.push(target.clone());
                         indicator += 1;
@@ -47,9 +53,9 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                         let new_code:Option<&str> = new_status.split_whitespace().next();
                         let new_result = match new_code {
                             Some(new_code) => new_code.to_string(),
-                            None => String::from("Unknown"),
+                            None => String::from("Unknown Code"),
                         };
-                        println!("{} {} {} {}",depth.to_string().purple().italic() ,new_result.cyan(), word, new_target.magenta());
+                        println!("{} {} {} {}", depth.to_string().purple().italic() ,new_result.cyan(), word, new_target.magenta());
                     } else {
                         continue;
                     }
@@ -99,4 +105,4 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
         }
     };
     Ok(())
-}//will be optimized. deal with it lmao
+}

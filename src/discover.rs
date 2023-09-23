@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use colored::*;
 
+
 pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let file = File::open(wordlist).expect("Failed to open the file.");
     let mut successful: Vec<String> = vec![];
@@ -62,15 +63,19 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                 },
 
                 2 => {
-                    println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
-                    let mut indicator: i32 = -1;
-                    //let resp = response.json::<HashMap<String, String>>().await?;
                     let code:Option<&str> = status.split_whitespace().next();
                     let result = match code {
                         Some(code) => code.to_string(),
                         None => String::from("Unknown"),
                     };
-                    println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+
+                    if response.status().is_success() {
+                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+                    } else {
+                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                    }
+                    let mut indicator: i32 = -1; 
+
                     let mut successful: Vec<String> = vec![];
                     if response.status().is_success() {
                         successful.push(target.clone());
@@ -98,7 +103,7 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                     }
                 },
                 _ => {
-                    println!("Unknown Depth");
+                    println!("{}: Unknown Depth: {}", "Error".red(), depth.to_string().magenta().italic());
                     std::process::exit(1)
                 }
             }

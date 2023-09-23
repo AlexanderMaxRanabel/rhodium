@@ -15,7 +15,7 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
         if let Ok(word) = line {
             match type_fiter.as_str() {
                 "--bycode" => {
-                    let target = url.clone().to_string() + &*word.to_string();
+                    let target = url.clone().to_string() + "/" +&word.to_string();
                     let response = reqwest::get(target.clone()).await?;
                     let status = response.status().to_string();
                     //let resp = response.json::<HashMap<String, String>>().await?;
@@ -31,24 +31,68 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                                 println!("{} {} {}", result.green(), word, target.clone().magenta());
                             }
                         },
+
                         "404" | "401" | "402" | "403" => {
                             if response.status().is_client_error() {
-                                println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                match filteree.as_str() {
+                                    "404" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "401" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "402" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "403" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    _ => println!("{}: Unknown HTTP Response Code", "Error".red())
+                                }
                             }
                         },
 
                         "301" | "307" | "302" => {
                             if response.status().is_redirection() {
+                                match filteree.as_str() {
+                                    "301" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "302" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "307" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    _ => println!("{}: Unknown HTTP Response Code", "Error".red())
+                                }
                                 println!("{} {} {}", result.green(), word, target.clone().magenta());
                             }
                         },
 
                         "500" | "502" => {
                             if response.status().is_server_error() {
-                                println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                match filteree.as_str() {
+                                    "500" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    "502" => {
+                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                    },
+
+                                    _ => println!("{} {} {}", result.green(), word, target.clone().magenta())
+                                }
                             }
                         },
-                        _ => println!("Unknown Status code")
+                        _ => println!("{}: Unknown HTTP Response Code", "Error".red())
                     }
                 },
 
@@ -87,7 +131,7 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                                 println!("{} {} {}", result.green(), word, target.clone().magenta());
                             }
                         },
-                        _ => println!("Unknown Type")
+                        _ => println!("{}: Unknown HTTP Response Code", "Error".red())
                     }
                 },
                 _ => println!("Unknown Type")

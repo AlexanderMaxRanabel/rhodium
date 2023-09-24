@@ -15,7 +15,7 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
         if let Ok(word) = line {
             match type_fiter.as_str() {
                 "--bycode" => {
-                    let target = url.clone().to_string() + "/" +&word.to_string();
+                    let target = url.clone().to_string() + "/" + &word.to_string();
                     let response = reqwest::get(target.clone()).await?;
                     let status = response.status().to_string();
                     //let resp = response.json::<HashMap<String, String>>().await?;
@@ -97,7 +97,7 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                 },
 
                 "--bytype" => {
-                    let target = url.clone().to_string() + &*word.to_string();
+                    let target = url.clone().to_string() + "/" + &word.to_string();
                     let response = reqwest::get(target.clone()).await?;
                     let status = response.status().to_string();
                     //let resp = response.json::<HashMap<String, String>>().await?;

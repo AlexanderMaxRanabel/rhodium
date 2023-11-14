@@ -5,7 +5,7 @@ use std::io::{BufRead, BufReader};
 use colored::*;
 
 pub async fn discover_filter(url: String, wordlist: String, filteree: String, type_fiter: String) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let file = File::open(wordlist).expect("Failed to open the file.");
+    let file = File::open(wordlist)?;
 
     // Create a BufReader to read the file efficiently
     let reader = BufReader::new(file);
@@ -28,7 +28,7 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                     match filteree.as_str() {
                         "200" => {
                             if response.status().is_success() {
-                                println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                println!("{} {} {}", &result.green(), word, target.clone().magenta());
                             }
                         },
 
@@ -36,19 +36,19 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                             if response.status().is_client_error() {
                                 match filteree.as_str() {
                                     "404" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "401" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "402" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "403" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     _ => println!("{}: Unknown HTTP Response Code", "Error".red())
@@ -60,20 +60,19 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                             if response.status().is_redirection() {
                                 match filteree.as_str() {
                                     "301" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "302" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "307" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     _ => println!("{}: Unknown HTTP Response Code", "Error".red())
                                 }
-                                println!("{} {} {}", result.green(), word, target.clone().magenta());
                             }
                         },
 
@@ -81,11 +80,11 @@ pub async fn discover_filter(url: String, wordlist: String, filteree: String, ty
                             if response.status().is_server_error() {
                                 match filteree.as_str() {
                                     "500" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     "502" => {
-                                        println!("{} {} {}", result.green(), word, target.clone().magenta());
+                                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                                     },
 
                                     _ => println!("{} {} {}", result.green(), word, target.clone().magenta())

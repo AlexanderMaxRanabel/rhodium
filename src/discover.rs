@@ -5,7 +5,7 @@ use colored::*;
 
 
 pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let file = File::open(wordlist).expect("Failed to open the file.");
+    let file = File::open(wordlist)?;
     let mut successful: Vec<String> = vec![];
 
     // Create a BufReader to read the file efficiently
@@ -13,7 +13,7 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
     // Iterate over each line in the wordlist
     for line in reader.lines() {
         if let Ok(word) = line {
-            let target = url.clone().to_string() + "/" + &word.to_string();
+            let target = format!("{}/{}", url, word);
             let response = reqwest::get(target.clone()).await?;
             let status = response.status().to_string();
             let code:Option<&str> = status.split_whitespace().next();
@@ -21,26 +21,27 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                 Some(code) => code.to_string(),
                 None => String::from("Unknown"),
             };
+
             match depth {
                 0 => {
                     if response.status().is_success() {
-                        println!("{} {} {}", result.clone().cyan(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.cyan(), word, target.clone().magenta());
                     } else {
-                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.red(), word, target.clone().magenta());
                     }
                 },
 
                 1 => {
-                    let code:Option<&str> = status.split_whitespace().next();
+                    let code: Option<&str> = status.split_whitespace().next();
                     let result = match code {
                         Some(code) => code.to_string(),
                         None => String::from("Unknown"),
                     };
 
                     if response.status().is_success() {
-                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                     } else {
-                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.red(), word, target.clone().magenta());
                     }
 
                     let mut indicator: i32 = -1;  
@@ -70,9 +71,9 @@ pub async fn discover(url: String, wordlist: String, depth: u8) -> Result<(), Bo
                     };
 
                     if response.status().is_success() {
-                        println!("{} {} {}", result.clone().green(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.green(), word, target.clone().magenta());
                     } else {
-                        println!("{} {} {}", result.clone().red(), word, target.clone().magenta());
+                        println!("{} {} {}", &result.red(), word, target.clone().magenta());
                     }
                     let mut indicator: i32 = -1; 
 

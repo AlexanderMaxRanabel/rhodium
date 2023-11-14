@@ -11,15 +11,17 @@ async fn main() {
     //monologue0 --url1 https://discord.com/2 --wordlist3 test.txt4  --depth 2 --normal
     if args.len() > 6 {
         let log = r#"
- _ __ ___   ___  _ __   ___
-| '_ ` _ \ / _ \| '_ \ / _ \
-| | | | | | (_) | | | | (_) |
-|_| |_| |_|\___/|_| |_|\___/
+      _               _ _                 
+     | |             | (_)                
+ _ __| |__   ___   __| |_ _   _ _ __ ___  
+| '__| '_ \ / _ \ / _` | | | | | '_ ` _ \ 
+| |  | | | | (_) | (_| | | |_| | | | | | |
+|_|  |_| |_|\___/ \__,_|_|\__,_|_| |_| |_|
         "#;
-        println!("{}", log);
+        println!("{}", log.red());
         let argument = &args[1].to_string();
         match argument.as_str() {
-            "--url" => {
+            "--url" | "-u" => {
                 let url = &args[2].to_string();
                 let wordlist = &args[4].to_string();
                 let mode = &args[7].to_string();
@@ -30,20 +32,22 @@ async fn main() {
                     std::process::exit(1);
                 }
                 match mode.as_str() {
-                    "--normal" => {
+                    "--normal" | "-n" => {
                         let _ = tokio::task::spawn(discover::discover(url.clone(), wordlist.clone(), depth)).await;
                     },
-                    "--filter" => {
+
+                    "--filter" | "-f" => {
                         //monologue0 --url1 https://discord.com/2 --wordlist3 test.txt4  --depth5 26 --filter7 --bycode8 4049
                         let type_filter = &args[8].to_string();
                         let filteree = &args[9].to_string();
                         let _ = tokio::task::spawn(discover_filter::discover_filter(url.clone(), wordlist.clone(), filteree.clone(), type_filter.clone())).await;
                     },
-                    _ => println!("Unknown mode")
+
+                    _ => println!("{}: Unknown Mode: {}", "Error".red(), mode),
                 }
             },
 
-            "help" => {
+            "--help" | "-h" => {
                 println!("--help for help");
                 println!("usage: --url [website] --wordlist [wordlist] [optional]");
             },
